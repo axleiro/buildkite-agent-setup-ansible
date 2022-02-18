@@ -1,0 +1,4 @@
+Host                    *
+BatchMode               yes
+IdentityFile            ~/.ssh/id-solana-testnet
+StrictHostKeyChecking   no

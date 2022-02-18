@@ -1,0 +1,74 @@
+---
+- hosts: test
+  become_user: buildkite-agent
+  tasks:
+   - name: remove if already exist
+     shell: sudo rm -rf solana
+   - name: Clone solana repo to setup new buildkite
+     shell: sudo git clone https://github.com/solana-labs/solana.git
+   - name: removing files which are not required
+     shell: sudo rm solana/ci/setup-new-buildkite-agent/setup-ssh.sh
+   - shell: sudo rm solana/ci/setup-new-buildkite-agent/setup-sudoers.sh
+   - name: removing old bash script
+     shell: sudo rm solana/ci/setup-new-buildkite-agent/setup-new-machine.sh
+   - name: changing permission of solana
+     shell: sudo chmod -R 0777 solana
+   - name: change permission of lib
+     shell: sudo chmod -R 0777 /var/lib/*
+   - name: remove setup-buildkite.sh file
+     shell: sudo rm solana/ci/setup-new-buildkite-agent/setup-buildkite.sh
+   - name: copy new bash file on agent
+     template:
+       src: setup-buildkite.sh
+       dest: $HOME/solana/ci/setup-new-buildkite-agent
+       mode: 0777
+   - name: install buildkite
+     shell: sudo $HOME/solana/ci/setup-new-buildkite-agent/setup-buildkite.sh
+   - name: copy new bash file on agent
+     template:
+       src: setup-new-buildkite.sh 
+       dest: $HOME/solana/ci/setup-new-buildkite-agent
+       mode: 0777
+   - name: create directory if not present
+     shell: mkdir -p /var/lib/buildkite-agent/.ssh
+   - name: change permission of .ssh
+     shell: sudo chmod -R 0777 /var/lib/* 
+   - name: copy new bash file on agent
+     template:
+       src: id-solana-testnet
+       dest: /var/lib/buildkite-agent/.ssh/id-solana-testnet
+       mode: 0777
+   - name: copy new bash file on agent
+     template:
+       src: id-solana-testnet.pub
+       dest: /var/lib/buildkite-agent/.ssh/id-solana-testnet.pub
+       mode: 0777
+   - name: copy new bash file on agent
+     template:
+       src: cuda.sh
+       dest: $HOME/solana/ci/setup-new-buildkite-agent/cuda.sh
+       mode: 0777
+   - name: copy new bash file on agent
+     template:
+       src: config
+       dest: /var/lib/buildkite-agent/.ssh/config
+       mode: 0777
+   - name: copy bash file
+     template:
+       src: set-passwordless.sh
+       dest: $HOME/solana/ci/setup-new-buildkite-agent/set-passwordless.sh
+       mode: 0777
+   - name: make buildkite-agent  passwordless
+     shell: sudo $HOME/solana/ci/setup-new-buildkite-agent/set-passwordless.sh
+   - name: Change owner of the files
+     shell: sudo chown buildkite-agent:buildkite-agent /var/lib/buildkite-agent/.ssh/config /var/lib/buildkite-agent/.ssh/id-solana-testnet /var/lib/buildkite-agent/.ssh/id-solana-testnet.pub
+   - name: Change permission of config and private key
+     shell: sudo chmod 600 /var/lib/buildkite-agent/.ssh/config /var/lib/buildkite-agent/.ssh/id-solana-testnet
+   - name: Installing cuda driver if your machine do not have cuda disable this
+     shell: sudo $HOME/solana/ci/setup-new-buildkite-agent/cuda.sh
+   - name: installing all neccssary packages [it will take approx 10 min don't force stop]
+     shell: sudo $HOME/solana/ci/setup-new-buildkite-agent/setup-new-buildkite.sh
+#   - name: reload daemon
+#     shell: sudo systemctl daemon-reload
+#   - name: enable buildkite
+#     shell: sudo systemctl enable --now buildkite-agent
