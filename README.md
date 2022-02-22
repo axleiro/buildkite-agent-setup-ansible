@@ -19,7 +19,7 @@ This Ansible playbook (**new-playbook.yml**) will setup buildkite-agent on slave
 3. Go to the machine where you want to setup new buildkite and run :
 
  ```bash
-   ssh-keygen
+  ssh-keygen
  ```
   After that paste the above copied public ssh key to `authorized_keys` file, Using this command :
   
@@ -38,7 +38,7 @@ This Ansible playbook (**new-playbook.yml**) will setup buildkite-agent on slave
 6. Add `buildkite agent tags` in server machine(slave nodes) in `buildkite-agent.cfg` file Like `queue=my_example_queue` , Using this command :
 
 ```bash
- sudo vi /etc/buildkite-agent/buildkite-agent.cfg
+  sudo vi /etc/buildkite-agent/buildkite-agent.cfg
 ```
 7. Switch user to `buildkite-agent` using command :
  
