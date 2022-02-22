@@ -68,7 +68,7 @@
      shell: sudo $HOME/solana/ci/setup-new-buildkite-agent/cuda.sh
    - name: installing all neccssary packages [it will take approx 10 min don't force stop]
      shell: sudo $HOME/solana/ci/setup-new-buildkite-agent/setup-new-buildkite.sh
-#   - name: reload daemon
-#     shell: sudo systemctl daemon-reload
+   - name: reload daemon
+     shell: sudo systemctl daemon-reload
 #   - name: enable buildkite
 #     shell: sudo systemctl enable --now buildkite-agent
